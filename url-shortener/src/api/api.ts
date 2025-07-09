@@ -1,40 +1,8 @@
 import axios, { AxiosResponse, AxiosError } from "axios";
 
 // Define interfaces for request payloads
-interface PostUrlPayload {
-  url: string;
-  remarks: string;
-  expiry?: string;
-}
 
-interface UpdateUrlPayload {
-  shortUrl: string;
-  url: string;
-  remarks: string;
-  expiry?: string;
-}
 
-interface CreateUrlPayload {
-  url: string;
-  remarks: string;
-}
-
-interface UpdateUrlByIdPayload {
-  url: string;
-  remarks: string;
-}
-
-interface RegisterUserPayload {
-  username: string;
-  email: string;
-  contact: string;
-  password: string;
-}
-
-interface LoginUserPayload {
-  email: string;
-  password: string;
-}
 
 // Define interface for API response data
 interface ApiResponse<T = unknown> {

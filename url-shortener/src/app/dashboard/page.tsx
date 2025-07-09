@@ -10,10 +10,10 @@ import { logoutUser } from "@/api/api";
 import ResultTable from "@/components/ResultTable";
 import AnalyticsTable from "@/components/AnalyticsTable";
 import BarChart from "@/components/BarChart";
-import ProfileData from "@/components/ProfileData";
+
 import CreateNewModal from "@/components/CreateNewModal";
 import ConfirmationModal from "@/components/ConfirmationModal";
-import BottomUpMenu from "@/components/BottomUpMenu";
+
 import Modal from "@/components/Modal";
 
 // Define interface for state
@@ -25,19 +25,7 @@ interface DashboardState {
 }
 
 // Define interface for user data
-interface UserData {
-  username: string;
-  // Add other properties as needed
-}
 
-// Define interface for URL data
-interface UrlData {
-  url: string;
-  shortUrl: string;
-  remarks: string;
-  expiry?: string;
-  _id: string;
-}
 
 // Define reducer action types
 type DashboardAction =
@@ -102,13 +90,7 @@ const Dashboard: React.FC = () => {
     modalType,
     setModalType,
     setIsLoggedIn,
-    pageUrlData,
-    setPageUrlData,
-    refreshData,
-    setRefreshData,
-    expirySwitch,
-    setExpirySwitch,
-    editLinkClicked,
+   
   } = useUserContext();
   const router = useRouter();
   const tabletSize = useScreenSize(900);
