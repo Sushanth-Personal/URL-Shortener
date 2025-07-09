@@ -1,0 +1,215 @@
+.destinationUrlContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 0 21px;
+  font-family: "Manrope", sans-serif;
+}
+
+.destinationUrlContainer span {
+  font-size: 1.6rem;
+  width: 100%;
+  font-weight: 600;
+  color: #3b3c51;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+}
+
+.destinationUrlContainer span p {
+  all: unset;
+  color: red;
+}
+
+.destinationUrlContainer input {
+  width: 100%;
+  height: 38px;
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
+  padding: 8px 12px 8px 12px;
+  outline: none;
+  transform: 150ms ease-in-out;
+}
+
+.destinationUrlContainer input:hover {
+  transform: scale(1.01);
+}
+
+.destinationUrlContainer input::placeholder {
+  color: #d1d5db;
+}
+
+.destinationUrlContainer input:focus {
+  border: 1px solid #1d26ce;
+  color: black;
+}
+
+.destinationUrlContainer textarea {
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
+  padding: 8px 12px;
+  outline: none;
+  resize: none; /* Prevent resizing if not needed */
+  transform: 150ms ease-in-out;
+}
+
+.destinationUrlContainer textarea::placeholder {
+  color: #d1d5db;
+}
+
+.destinationUrlContainer textarea:focus {
+  border: 1px solid #1d26ce;
+  color: black;
+}
+
+.destinationUrlContainer textarea:hover{
+    transform: scale(1.01);
+}
+.remarksContainer textarea {
+  height: 100px; /* Custom height for Remarks */
+}
+
+.remarksContainer input {
+  height: 147px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  transform: 150ms ease-in-out;
+}
+
+
+
+.linkExpiry {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 0 21px;
+}
+
+.datePicker {
+  width: 90%;
+  height: 38px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  margin: 0 21px;
+}
+
+.displayField {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: 1;
+  width: 80%;
+  height: 38px;
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
+  padding: 8px 12px 8px 12px;
+  outline: none;
+  background-color: white;
+  cursor: pointer;
+  color: #3b3c51;
+  display: flex;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.datePickerContainer {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  margin-bottom: 50px;
+}
+
+.actionBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background-color: rgba(59, 60, 81, 0.1);
+  height: 66px;
+  padding: 0 21px;
+}
+
+.top {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.createButton {
+  min-width: 115px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: none;
+  background-color: #1b48da;
+  color: white;
+  font-weight: 600;
+  font-size: 1.4rem;
+  transform: 150ms ease-in-out;
+}
+
+.createButton:hover {
+  transform: scale(1.05);
+  filter: brightness(1.05);
+}
+
+.clearButton {
+  border: none;
+  transform: 150ms ease-in-out;
+}
+
+.clearButton:hover {
+  transform: scale(1.05);
+  font-weight: 700;
+}
+
+@media screen and (max-width: 600px) {
+  .destinationUrlContainer span {
+    font-size: 1.2rem;
+  }
+
+  .destinationUrlContainer input {
+    transform-origin: left center;
+    height: 25px;
+    font-size: 1.2rem;
+  }
+
+  .createButton {
+    font-size: 1.2rem;
+    transform: origin right center;
+    transform: scale(0.8);
+  }
+
+  .actionBar {
+    padding: 0 10px 0 15px;
+    height: 50px;
+  }
+
+  .clearButton {
+    font-size: 1.2rem;
+  }
+}
+
+.error {
+  color: red;
+}
+
+.expiryError {
+  margin-left: 21px;
+  margin-top: 5px;
+}

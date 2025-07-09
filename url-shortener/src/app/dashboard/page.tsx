@@ -1,27 +1,61 @@
-// src/app/dashboard/page.tsx
 "use client";
+
 import { useReducer, useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useUserContext } from "@/contexts/UserContext";
 import useScreenSize from "@/hooks/useScreenSize";
 import { toast } from "react-toastify";
-import { logoutUser} from "@/api/api";
+import "react-toastify/dist/ReactToastify.css";
+import { logoutUser } from "@/api/api";
 import ResultTable from "@/components/ResultTable";
 import AnalyticsTable from "@/components/AnalyticsTable";
 import BarChart from "@/components/BarChart";
-// import ProfileData from "@/components/ProfileData";
+import ProfileData from "@/components/ProfileData";
 import CreateNewModal from "@/components/CreateNewModal";
 import ConfirmationModal from "@/components/ConfirmationModal";
 import BottomUpMenu from "@/components/BottomUpMenu";
+import Modal from "@/components/Modal";
 
-const initialState = {
+// Define interface for state
+interface DashboardState {
+  dashboardActive: boolean;
+  linkActive: boolean;
+  analyticsActive: boolean;
+  settingsActive: boolean;
+}
+
+// Define interface for user data
+interface UserData {
+  username: string;
+  // Add other properties as needed
+}
+
+// Define interface for URL data
+interface UrlData {
+  url: string;
+  shortUrl: string;
+  remarks: string;
+  expiry?: string;
+  _id: string;
+}
+
+// Define reducer action types
+type DashboardAction =
+  | { type: "SET_DASHBOARD_ACTIVE" }
+  | { type: "SET_LINK_ACTIVE" }
+  | { type: "SET_ANALYTICS_ACTIVE" }
+  | { type: "SET_SETTINGS_ACTIVE" };
+
+// Initial state
+const initialState: DashboardState = {
   dashboardActive: true,
   linkActive: false,
   analyticsActive: false,
   settingsActive: false,
 };
 
-const reducer = (state, action) => {
+// Reducer function
+const reducer = (state: DashboardState, action: DashboardAction): DashboardState => {
   switch (action.type) {
     case "SET_DASHBOARD_ACTIVE":
       return {
@@ -56,28 +90,37 @@ const reducer = (state, action) => {
   }
 };
 
-export default function Dashboard() {
+const Dashboard: React.FC = () => {
   const {
     userData,
     setUserData,
     setEditLinkClicked,
     setCloseModal,
+    closeModal,
     showConfirmationModal,
     setShowConfirmationModal,
     modalType,
     setModalType,
     setIsLoggedIn,
+    pageUrlData,
+    setPageUrlData,
+    refreshData,
+    setRefreshData,
+    expirySwitch,
+    setExpirySwitch,
+    editLinkClicked,
   } = useUserContext();
   const router = useRouter();
   const tabletSize = useScreenSize(900);
   const mobileHorizontalSize = useScreenSize(600);
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [showModal, setShowModal] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [query, setQuery] = useState("");
-  const menuButtonRef = useRef(null);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [query, setQuery] = useState<string>("");
+  const menuButtonRef = useRef<HTMLDivElement>(null);
 
   const handleCreateNew = () => {
+    console.log("Opening CreateNewModal, showModal:", true, "modalType:", "createNew");
     setModalType("createNew");
     setShowModal(true);
   };
@@ -108,7 +151,7 @@ export default function Dashboard() {
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
-  const getShortForm = (username: string) => {
+  const getShortForm = (username: string): string => {
     const words = username.trim().split(" ");
     return words.length === 1
       ? words[0][0].toUpperCase()
@@ -142,11 +185,16 @@ export default function Dashboard() {
   }, [router, setUserData]);
 
   useEffect(() => {
-    if (setCloseModal) {
+    if (closeModal) {
       setShowModal(false);
       setModalType(null);
+      setCloseModal(false);
     }
-  }, [setCloseModal]);
+  }, [closeModal, setCloseModal, setModalType]);
+
+  // Wrap modals with Modal component
+  const WrappedCreateNewModal = CreateNewModal(Modal);
+  const WrappedConfirmationModal = ConfirmationModal(Modal);
 
   return (
     <section className="w-screen h-screen bg-white flex">
@@ -159,13 +207,9 @@ export default function Dashboard() {
           />
           <div className="flex flex-col p-3 pb-4 w-full">
             <button
-              onClick={() =>
-                dispatch({ type: "SET_DASHBOARD_ACTIVE" })
-              }
+              onClick={() => dispatch({ type: "SET_DASHBOARD_ACTIVE" })}
               className={`flex items-center p-2.5 text-lg font-semibold text-gray-600 gap-2 hover:text-blue-600 hover:bg-blue-50 rounded-lg ${
-                state.dashboardActive
-                  ? "text-blue-600 bg-blue-50"
-                  : ""
+                state.dashboardActive ? "text-blue-600 bg-blue-50" : ""
               }`}
             >
               <img
@@ -189,13 +233,9 @@ export default function Dashboard() {
               Link
             </button>
             <button
-              onClick={() =>
-                dispatch({ type: "SET_ANALYTICS_ACTIVE" })
-              }
+              onClick={() => dispatch({ type: "SET_ANALYTICS_ACTIVE" })}
               className={`flex items-center p-2.5 text-lg font-semibold text-gray-600 gap-2 hover:text-blue-600 hover:bg-blue-50 rounded-lg ${
-                state.analyticsActive
-                  ? "text-blue-600 bg-blue-50"
-                  : ""
+                state.analyticsActive ? "text-blue-600 bg-blue-50" : ""
               }`}
             >
               <img
@@ -208,9 +248,7 @@ export default function Dashboard() {
           </div>
           <div className="p-3 w-full border-t border-b border-gray-200">
             <div
-              onClick={() =>
-                dispatch({ type: "SET_SETTINGS_ACTIVE" })
-              }
+              onClick={() => dispatch({ type: "SET_SETTINGS_ACTIVE" })}
               className={`flex items-center p-3.5 text-lg font-semibold text-gray-600 gap-2 hover:text-blue-600 hover:bg-blue-50 rounded-lg ${
                 state.settingsActive ? "text-blue-600 bg-blue-50" : ""
               }`}
@@ -288,16 +326,12 @@ export default function Dashboard() {
               onClick={toggleMenu}
               className="w-10 h-10 flex items-center justify-center bg-blue-600 text-white rounded-full cursor-pointer"
             >
-              {userData?.username
-                ? getShortForm(userData.username)
-                : "SM"}
+              {userData?.username ? getShortForm(userData.username) : "SM"}
             </div>
             <button
               onClick={handleLogout}
               className={`px-4 py-2 rounded ${
-                isMenuOpen && !tabletSize
-                  ? "bg-red-600 text-white"
-                  : "text-gray-600"
+                isMenuOpen && !tabletSize ? "bg-red-600 text-white" : "text-gray-600"
               }`}
             >
               Logout
@@ -306,30 +340,21 @@ export default function Dashboard() {
         </nav>
         <div
           className={`flex-1 border-t p-5 bg-gray-50 ${
-            state.dashboardActive || state.settingsActive
-              ? "bg-white"
-              : ""
+            state.dashboardActive || state.settingsActive ? "bg-white" : ""
           }`}
         >
           {state.linkActive && (
-            <ResultTable
-              handleEditLinkClick={handleEditLinkClick}
-              query={query}
-            />
+            <ResultTable handleEditLinkClick={handleEditLinkClick} query={query} />
           )}
           {state.analyticsActive && (
-            <AnalyticsTable
-              handleEditLinkClick={handleEditLinkClick}
-            />
+            <AnalyticsTable handleEditLinkClick={handleEditLinkClick} />
           )}
           {state.dashboardActive && <BarChart />}
-          {state.settingsActive && (
-            <ProfileData handleDeleteAccount={handleDeleteAccount} />
-          )}
+          {state.settingsActive && <ProfileData handleDeleteAccount={handleDeleteAccount} />}
         </div>
       </div>
       {showModal && (
-        <CreateNewModal
+        <WrappedCreateNewModal
           show={showModal}
           onClose={handleCloseModal}
           title={modalType === "createNew" ? "New Link" : "Edit Link"}
@@ -337,7 +362,7 @@ export default function Dashboard() {
         />
       )}
       {showConfirmationModal && (
-        <ConfirmationModal
+        <WrappedConfirmationModal
           show={showConfirmationModal}
           onClose={handleCloseModal}
           modalType={modalType}
@@ -369,13 +394,7 @@ export default function Dashboard() {
       )}
       {tabletSize && (
         <BottomUpMenu
-          options={[
-            "Dashboard",
-            "Link",
-            "Analytics",
-            "Settings",
-            "Logout",
-          ]}
+          options={["Dashboard", "Link", "Analytics", "Settings", "Logout"]}
           dispatch={dispatch}
           isOpen={isMenuOpen}
           setIsOpen={setIsMenuOpen}
@@ -385,4 +404,6 @@ export default function Dashboard() {
       )}
     </section>
   );
-}
+};
+
+export default Dashboard;

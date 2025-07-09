@@ -59,7 +59,7 @@ const AnalyticsTable: React.FC<AnalyticsTableProps> = ({ handleEditLinkClick }) 
     loading,
     refetch,
   } = useFetch<{ data: AnalyticsData[]; pagination: Pagination }>(
-    `${baseURL}/api/analytics?page=${currentPage}&limit=${pageSize}`,
+    `api/analytics?page=${currentPage}&limit=${pageSize}`,
     { withCredentials: true },
     true
   );

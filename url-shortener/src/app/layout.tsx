@@ -16,6 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <UserProvider>
           {children}
           <ToastContainer position="top-right" autoClose={3000} />
+          <div id="modal-root"></div>
         </UserProvider>
       </body>
     </html>
