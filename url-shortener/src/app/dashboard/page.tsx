@@ -10,11 +10,13 @@ import { logoutUser } from "@/api/api";
 import ResultTable from "@/components/ResultTable";
 import AnalyticsTable from "@/components/AnalyticsTable";
 import BarChart from "@/components/BarChart";
-
 import CreateNewModal from "@/components/CreateNewModal";
 import ConfirmationModal from "@/components/ConfirmationModal";
-
 import Modal from "@/components/Modal";
+import Image from "next/image"; // Import Image component
+// Import ProfileData and BottomUpMenu (uncomment if they exist)
+// import ProfileData from "@/components/ProfileData";
+// import BottomUpMenu from "@/components/BottomUpMenu";
 
 // Define interface for state
 interface DashboardState {
@@ -23,9 +25,6 @@ interface DashboardState {
   analyticsActive: boolean;
   settingsActive: boolean;
 }
-
-// Define interface for user data
-
 
 // Define reducer action types
 type DashboardAction =
@@ -90,7 +89,6 @@ const Dashboard: React.FC = () => {
     modalType,
     setModalType,
     setIsLoggedIn,
-   
   } = useUserContext();
   const router = useRouter();
   const tabletSize = useScreenSize(900);
@@ -146,10 +144,10 @@ const Dashboard: React.FC = () => {
     setModalType(null);
   };
 
-  const handleDeleteAccount = () => {
-    setShowConfirmationModal(true);
-    setModalType("deleteAccount");
-  };
+  // const handleDeleteAccount = () => {
+  //   setShowConfirmationModal(true);
+  //   setModalType("deleteAccount");
+  // };
 
   const handleEditLinkClick = (rowId: string) => {
     setModalType("edit");
@@ -183,24 +181,20 @@ const Dashboard: React.FC = () => {
       {!tabletSize && !mobileHorizontalSize && (
         <div className="flex flex-col items-center w-64 bg-gray-50 h-full">
           <div className="flex items-center justify-center w-full h-12 bg-gray-50 rounded-t-lg">
-            <h1 className="font-weight-700 text-2xl font-bold">
-              URL Shortener
-            </h1>
+            <h1 className="font-weight-700 text-2xl font-bold">URL Shortener</h1>
           </div>
           <div className="flex flex-col p-3 pb-4 w-full">
             <button
-              onClick={() =>
-                dispatch({ type: "SET_DASHBOARD_ACTIVE" })
-              }
+              onClick={() => dispatch({ type: "SET_DASHBOARD_ACTIVE" })}
               className={`flex items-center p-2.5 text-lg font-semibold text-gray-600 gap-2 hover:text-blue-600 hover:bg-blue-50 rounded-lg ${
-                state.dashboardActive
-                  ? "text-blue-600 bg-blue-50"
-                  : ""
+                state.dashboardActive ? "text-blue-600 bg-blue-50" : ""
               }`}
             >
-              <img
+              <Image
                 src="https://res.cloudinary.com/dtu64orvo/image/upload/v1737624518/Icons_zqiriu.png"
                 alt="dashboard"
+                width={24}
+                height={24}
                 className="w-6 h-6"
               />
               Dashboard
@@ -211,26 +205,26 @@ const Dashboard: React.FC = () => {
                 state.linkActive ? "text-blue-600 bg-blue-50" : ""
               }`}
             >
-              <img
+              <Image
                 src="https://res.cloudinary.com/dtu64orvo/image/upload/v1737624522/Icon_rahplm.png"
                 alt="link"
+                width={24}
+                height={24}
                 className="w-6 h-6"
               />
               Link
             </button>
             <button
-              onClick={() =>
-                dispatch({ type: "SET_ANALYTICS_ACTIVE" })
-              }
+              onClick={() => dispatch({ type: "SET_ANALYTICS_ACTIVE" })}
               className={`flex items-center p-2.5 text-lg font-semibold text-gray-600 gap-2 hover:text-blue-600 hover:bg-blue-50 rounded-lg ${
-                state.analyticsActive
-                  ? "text-blue-600 bg-blue-50"
-                  : ""
+                state.analyticsActive ? "text-blue-600 bg-blue-50" : ""
               }`}
             >
-              <img
+              <Image
                 src="https://res.cloudinary.com/dtu64orvo/image/upload/v1737624528/Icon_1_g710hl.png"
                 alt="analytics"
+                width={24}
+                height={24}
                 className="w-6 h-6"
               />
               Analytics
@@ -242,9 +236,11 @@ const Dashboard: React.FC = () => {
                 state.settingsActive ? "text-blue-600 bg-blue-50" : ""
               }`}
             >
-              <img
+              <Image
                 src="https://res.cloudinary.com/dtu64orvo/image/upload/v1737624533/Frame_vnitbr.png"
                 alt="settings"
+                width={24}
+                height={24}
                 className="w-6 h-6"
               />
               Settings
@@ -256,17 +252,21 @@ const Dashboard: React.FC = () => {
         <nav className="w-full h-[72px] flex items-center justify-between px-5 bg-white shadow">
           <div className="flex items-center gap-4">
             {tabletSize && (
-              <img
+              <Image
                 src="https://res.cloudinary.com/dtu64orvo/image/upload/v1738152167/download_1_dbcvdx.svg"
                 alt="logo"
+                width={40}
+                height={40}
                 className="w-10"
               />
             )}
             {!tabletSize && !mobileHorizontalSize && (
               <div className="flex items-center gap-2">
-                <img
+                <Image
                   src="https://res.cloudinary.com/dtu64orvo/image/upload/v1737634206/%EF%B8%8F_mhduvo.png"
                   alt="goodmorning"
+                  width={24}
+                  height={24}
                   className="w-6 h-6"
                 />
                 <p className="text-lg">
@@ -288,18 +288,22 @@ const Dashboard: React.FC = () => {
                 onClick={handleCreateNew}
                 className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
               >
-                <img
+                <Image
                   src="https://res.cloudinary.com/dtu64orvo/image/upload/v1737634367/Frame_1_rq3xx8.png"
                   alt="add"
+                  width={20}
+                  height={20}
                   className="w-5 h-5"
                 />
                 Create new
               </button>
             )}
             <div className="relative flex items-center gap-2 border border-gray-300 rounded-lg px-3 py-1">
-              <img
+              <Image
                 src="https://res.cloudinary.com/dtu64orvo/image/upload/v1737634977/Frame_2_cs2ror.png"
                 alt="search"
+                width={20}
+                height={20}
                 className="w-5 h-5"
               />
               <input
@@ -315,16 +319,12 @@ const Dashboard: React.FC = () => {
               onClick={toggleMenu}
               className="w-10 h-10 flex items-center justify-center bg-blue-600 text-white rounded-full cursor-pointer"
             >
-              {userData?.username
-                ? getShortForm(userData.username)
-                : "SM"}
+              {userData?.username ? getShortForm(userData.username) : "SM"}
             </div>
             <button
               onClick={handleLogout}
               className={`px-4 py-2 rounded ${
-                isMenuOpen && !tabletSize
-                  ? "bg-red-600 text-white"
-                  : "text-gray-600"
+                isMenuOpen && !tabletSize ? "bg-red-600 text-white" : "text-gray-600"
               }`}
             >
               Logout
@@ -333,26 +333,17 @@ const Dashboard: React.FC = () => {
         </nav>
         <div
           className={`flex-1 border-t p-5 bg-gray-50 ${
-            state.dashboardActive || state.settingsActive
-              ? "bg-white"
-              : ""
+            state.dashboardActive || state.settingsActive ? "bg-white" : ""
           }`}
         >
           {state.linkActive && (
-            <ResultTable
-              handleEditLinkClick={handleEditLinkClick}
-              query={query}
-            />
+            <ResultTable handleEditLinkClick={handleEditLinkClick} query={query} />
           )}
-          {state.analyticsActive && (
-            <AnalyticsTable
-              handleEditLinkClick={handleEditLinkClick}
-            />
-          )}
+          {state.analyticsActive && <AnalyticsTable handleEditLinkClick={handleEditLinkClick} />}
           {state.dashboardActive && <BarChart />}
-          {state.settingsActive && (
-            <ProfileData handleDeleteAccount={handleDeleteAccount} />
-          )}
+          {/* Comment out or replace ProfileData until implemented */}
+          {/* {state.settingsActive && <ProfileData handleDeleteAccount={handleDeleteAccount} />} */}
+          {state.settingsActive && <div>Settings Placeholder</div>} {/* Temporary placeholder */}
         </div>
       </div>
       {showModal && (
@@ -387,29 +378,27 @@ const Dashboard: React.FC = () => {
           onClick={handleCreateNew}
           className="fixed bottom-4 right-4 bg-blue-600 text-white p-4 rounded-full"
         >
-          <img
+          <Image
             src="https://res.cloudinary.com/dtu64orvo/image/upload/v1737634367/Frame_1_rq3xx8.png"
             alt="add"
+            width={24}
+            height={24}
             className="w-6 h-6"
           />
         </button>
       )}
-      {tabletSize && (
+      {/* Comment out or replace BottomUpMenu until implemented */}
+      {/* {tabletSize && (
         <BottomUpMenu
-          options={[
-            "Dashboard",
-            "Link",
-            "Analytics",
-            "Settings",
-            "Logout",
-          ]}
+          options={["Dashboard", "Link", "Analytics", "Settings", "Logout"]}
           dispatch={dispatch}
           isOpen={isMenuOpen}
           setIsOpen={setIsMenuOpen}
           buttonRef={menuButtonRef}
           handles={["", "", "", "", handleLogout]}
         />
-      )}
+      )} */}
+      {tabletSize && <div>Menu Placeholder</div>} {/* Temporary placeholder */}
     </section>
   );
 };

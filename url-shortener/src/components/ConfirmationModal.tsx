@@ -1,21 +1,28 @@
 "use client";
 
+import { ReactNode, ComponentType } from "react";
 import { useUserContext } from "@/contexts/UserContext";
-import { ReactNode } from "react";
 
 // Define props interface for the wrapped component
 interface ModalContentProps {
-  [key: string]: any; // Allow any additional props to be passed to WrappedComponent
+  show: boolean;
+  onClose: () => void;
+  title: string;
+  modalType: "deleteAccount" | "deleteUrl" | "createNew" | "edit" | null; // Aligned with ModalProps
+  children: ReactNode;
+  headerStyle?: React.CSSProperties;
+  closeButtonStyle?: React.CSSProperties;
+  windowStyle?: React.CSSProperties;
 }
 
-// Define the HOC type
+// Define the HOC props
 interface ConfirmationModalProps {
-  WrappedComponent: React.ComponentType<{ children: ReactNode } & ModalContentProps>;
+  WrappedComponent: ComponentType<ModalContentProps>;
 }
 
 const ConfirmationModal = ({ WrappedComponent }: ConfirmationModalProps) => {
-  const ModalContent: React.FC<ModalContentProps> = ({ ...props }) => {
-    const { setDeleteAccount, modalType, setConfirmDeleteUrl, setShowConfirmationModal } = useUserContext();
+  const ModalContent: React.FC<ModalContentProps> = ({ show, onClose, title, modalType, ...props }) => {
+    const { setDeleteAccount, setConfirmDeleteUrl, setShowConfirmationModal } = useUserContext();
 
     let content: ReactNode = null;
 
@@ -25,13 +32,20 @@ const ConfirmationModal = ({ WrappedComponent }: ConfirmationModalProps) => {
           <h1 className="text-2xl font-semibold">Are you sure you want to delete your account?</h1>
           <div className="w-full flex items-center justify-between gap-7">
             <button
-              onClick={() => setDeleteAccount(false)}
+              onClick={() => {
+                setShowConfirmationModal(false);
+                onClose();
+              }}
               className="w-[179px] h-[34px] flex items-center justify-center rounded bg-gray-200 text-black font-semibold text-[1.8rem] hover:brightness-75 hover:scale-[1.02] transition-all"
             >
               No
             </button>
             <button
-              onClick={() => setDeleteAccount(true)}
+              onClick={() => {
+                setDeleteAccount(true);
+                setShowConfirmationModal(false);
+                onClose();
+              }}
               className="w-[179px] h-[34px] flex items-center justify-center rounded bg-blue-700 text-white font-semibold text-[1.8rem] hover:brightness-125 hover:scale-[1.02] transition-all"
             >
               Yes
@@ -45,13 +59,20 @@ const ConfirmationModal = ({ WrappedComponent }: ConfirmationModalProps) => {
           <h1 className="text-2xl font-semibold">Are you sure, you want to remove it?</h1>
           <div className="w-full flex items-center justify-between gap-7">
             <button
-              onClick={() => setShowConfirmationModal(false)}
+              onClick={() => {
+                setShowConfirmationModal(false);
+                onClose();
+              }}
               className="w-[179px] h-[34px] flex items-center justify-center rounded bg-gray-200 text-black font-semibold text-[1.8rem] hover:brightness-75 hover:scale-[1.02] transition-all"
             >
               No
             </button>
             <button
-              onClick={() => setConfirmDeleteUrl(true)}
+              onClick={() => {
+                setConfirmDeleteUrl(true);
+                setShowConfirmationModal(false);
+                onClose();
+              }}
               className="w-[179px] h-[34px] flex items-center justify-center rounded bg-blue-700 text-white font-semibold text-[1.8rem] hover:brightness-125 hover:scale-[1.02] transition-all"
             >
               Yes
@@ -61,7 +82,7 @@ const ConfirmationModal = ({ WrappedComponent }: ConfirmationModalProps) => {
       );
     }
 
-    return <WrappedComponent {...props}>{content}</WrappedComponent>;
+    return <WrappedComponent show={show} onClose={onClose} title={title} modalType={modalType} {...props}>{content}</WrappedComponent>;
   };
 
   return ModalContent;

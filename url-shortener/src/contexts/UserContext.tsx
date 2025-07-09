@@ -1,4 +1,5 @@
-'use client';
+"use client";
+
 import { createContext, useState, useContext, useMemo, ReactNode } from "react";
 
 // Define the shape of the URL data (consistent with ResultTable.tsx)
@@ -11,10 +12,17 @@ interface UrlData {
   expiry: string | null;
 }
 
-// Define the shape of user data (adjust as needed based on your API)
+// Define the shape of user data
 interface UserData {
-  [key: string]: any; // Flexible type for user data; refine if you know the structure
+  _id: string;
+  username: string;
+  email: string;
+  contact: string;
+  [key: string]: string | number | undefined;
 }
+
+// Define the modal type union
+type ModalType = "deleteAccount" | "deleteUrl" | "createNew" | "edit" | null;
 
 // Define the context shape
 interface UserContextType {
@@ -22,10 +30,10 @@ interface UserContextType {
   setUserId: (userId: string | null) => void;
   isLoggedIn: boolean;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
-  userData: UserData;
-  setUserData: (userData: UserData) => void;
-  editLinkClicked: number;
-  setEditLinkClicked: (editLinkClicked: number) => void;
+  userData: UserData | null;
+  setUserData: (userData: UserData | null) => void;
+  editLinkClicked: string; // Changed from number to string
+  setEditLinkClicked: (editLinkClicked: string) => void; // Updated
   pageUrlData: UrlData[];
   setPageUrlData: (pageUrlData: UrlData[]) => void;
   closeModal: boolean;
@@ -38,8 +46,8 @@ interface UserContextType {
   setShowConfirmationModal: (showConfirmationModal: boolean) => void;
   confirmDeleteUrl: boolean;
   setConfirmDeleteUrl: (confirmDeleteUrl: boolean) => void;
-  modalType: string | null;
-  setModalType: (modalType: string | null) => void;
+  modalType: ModalType;
+  setModalType: (modalType: ModalType) => void;
   expirySwitch: boolean;
   setExpirySwitch: (expirySwitch: boolean) => void;
   clearModal: boolean;
@@ -60,15 +68,15 @@ interface UserProviderProps {
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [userId, setUserId] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [userData, setUserData] = useState<UserData>({});
-  const [editLinkClicked, setEditLinkClicked] = useState<number>(0);
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [editLinkClicked, setEditLinkClicked] = useState<string>(""); // Changed from 0 to ""
   const [pageUrlData, setPageUrlData] = useState<UrlData[]>([]);
   const [closeModal, setCloseModal] = useState<boolean>(false);
   const [refreshData, setRefreshData] = useState<boolean>(false);
   const [deleteAccount, setDeleteAccount] = useState<boolean>(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState<boolean>(false);
   const [confirmDeleteUrl, setConfirmDeleteUrl] = useState<boolean>(false);
-  const [modalType, setModalType] = useState<string | null>(null);
+  const [modalType, setModalType] = useState<ModalType>(null);
   const [expirySwitch, setExpirySwitch] = useState<boolean>(true);
   const [clearModal, setClearModal] = useState<boolean>(false);
   const [linkData, setLinkData] = useState<UrlData[]>([]);

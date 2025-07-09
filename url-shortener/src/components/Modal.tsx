@@ -8,6 +8,7 @@ interface ModalProps {
   show: boolean;
   onClose: () => void;
   title: string;
+  modalType: "deleteAccount" | "deleteUrl" | "createNew" | "edit" | null; // Added modalType
   children: ReactNode;
   headerStyle?: CSSProperties;
   closeButtonStyle?: CSSProperties;

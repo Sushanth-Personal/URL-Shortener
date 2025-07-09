@@ -5,6 +5,7 @@ import useFetch from "@/hooks/useFetch";
 import { useUserContext } from "@/contexts/UserContext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Image from "next/image";
 
 // Define the shape of the analytics data
 interface AnalyticsData {
@@ -45,7 +46,7 @@ const AnalyticsTable: React.FC<AnalyticsTableProps> = ({ handleEditLinkClick }) 
       prodUrl: process.env.NEXT_PUBLIC_API_BASE_URL_PRODUCTION,
       baseURL,
     });
-  }, []);
+  }, [baseURL]);
 
   const [data, setData] = useState<AnalyticsData[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -64,14 +65,6 @@ const AnalyticsTable: React.FC<AnalyticsTableProps> = ({ handleEditLinkClick }) 
     true
   );
 
-  const [sortConfig, setSortConfig] = useState<{
-    key: keyof AnalyticsData | null;
-    direction: "asc" | "desc" | null;
-  }>({
-    key: null,
-    direction: null,
-  });
-
   useEffect(() => {
     if (fetchedData && pagination) {
       setData(fetchedData.data);
@@ -88,7 +81,7 @@ const AnalyticsTable: React.FC<AnalyticsTableProps> = ({ handleEditLinkClick }) 
     if (refreshData) {
       refetch();
     }
-  }, [refreshData]);
+  }, [refreshData, refetch]);
 
   const handleSort = (key: keyof AnalyticsData, direction: "asc" | "desc") => {
     const sortedData = [...data].sort((a, b) => {
@@ -103,7 +96,6 @@ const AnalyticsTable: React.FC<AnalyticsTableProps> = ({ handleEditLinkClick }) 
       }
     });
     setData(sortedData);
-    setSortConfig({ key, direction });
   };
 
   const handleCopyToClipboard = (text: string) => {
@@ -146,19 +138,23 @@ const AnalyticsTable: React.FC<AnalyticsTableProps> = ({ handleEditLinkClick }) 
                 <div className="flex justify-center items-center gap-1">
                   <p>Timestamp</p>
                   <span className="flex flex-col items-center w-2">
-                    <img
+                    <Image
                       role="button"
                       onClick={() => handleSort("date", "asc")}
                       className="cursor-pointer mb-1 w-2 h-1 hover:scale-110 transition-transform duration-150"
                       src="https://res.cloudinary.com/dtu64orvo/image/upload/v1738083451/Vector_9_fdkwkf.png"
                       alt="asc"
+                      width={8}
+                      height={4}
                     />
-                    <img
+                    <Image
                       role="button"
                       onClick={() => handleSort("date", "desc")}
                       className="cursor-pointer mt-1 w-2 h-1 hover:scale-110 transition-transform duration-150"
                       src="https://res.cloudinary.com/dtu64orvo/image/upload/v1738083447/Vector_8_taduxn.png"
                       alt="desc"
+                      width={8}
+                      height={4}
                     />
                   </span>
                 </div>
@@ -166,11 +162,12 @@ const AnalyticsTable: React.FC<AnalyticsTableProps> = ({ handleEditLinkClick }) 
               <th className="p-2 font-bold text-lg w-[20%] min-w-[150px]">Original Link</th>
               <th className="p-2 font-bold text-lg w-[20%] min-w-[150px]">Short Link</th>
               <th className="p-2 font-bold text-lg w-[20%] min-w-[150px]">IP Address</th>
-              <th className="p-2 font-bold text-lg w-[20%] min-w-[150px] rounded-tr-xl">User Device</th>
+              <th className="p-2 font-bold text-lg w-[20%] min-w-[150px]">User Device</th>
+              <th className="p-2 font-bold text-lg w-[20%] min-w-[150px] rounded-tr-xl">Action</th>
             </tr>
           </thead>
           <tbody>
-            {data.map((row: AnalyticsData, index: number) => (
+            {data.map((row: AnalyticsData) => (
               <tr key={row._id} className="hover:bg-gray-200">
                 <td className="p-2 border border-gray-100 bg-white h-[58px] min-w-[150px] text-sm first:rounded-bl-xl">
                   {new Date(row.date).toLocaleString("en-US", {
@@ -189,19 +186,32 @@ const AnalyticsTable: React.FC<AnalyticsTableProps> = ({ handleEditLinkClick }) 
                   <div className="overflow-hidden text-ellipsis whitespace-nowrap">
                     {`${baseURL}/${row.shortUrl}`}
                   </div>
-                  <img
+                  <Image
                     role="button"
                     onClick={() => handleCopyToClipboard(`${baseURL}/${row.shortUrl}`)}
                     className="ml-2 cursor-pointer transition-transform duration-150 hover:scale-105 active:scale-95"
                     src="https://res.cloudinary.com/dtu64orvo/image/upload/v1737968945/Icons_2_iv0mah.png"
                     alt="copy"
+                    width={16}
+                    height={16}
                   />
                 </td>
                 <td className="p-2 border border-gray-100 bg-white h-[58px] min-w-[150px] text-sm">
                   {row.ipAddress}
                 </td>
-                <td className="p-2 border border-gray-100 bg-white h-[58px] min-w-[150px] text-sm last:rounded-br-xl">
+                <td className="p-2 border border-gray-100 bg-white h-[58px] min-w-[150px] text-sm">
                   {row.platform}
+                </td>
+                <td className="p-2 border border-gray-100 bg-white h-[58px] min-w-[150px] text-sm last:rounded-br-xl">
+                  <Image
+                    role="button"
+                    onClick={() => handleEditLinkClick(row._id)}
+                    className="cursor-pointer"
+                    src="https://res.cloudinary.com/dtu64orvo/image/upload/v1738081242/Icons_3_zzabfr.png"
+                    alt="edit"
+                    width={16}
+                    height={16}
+                  />
                 </td>
               </tr>
             ))}
@@ -216,9 +226,11 @@ const AnalyticsTable: React.FC<AnalyticsTableProps> = ({ handleEditLinkClick }) 
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
         >
-          <img
+          <Image
             src="https://res.cloudinary.com/dtu64orvo/image/upload/v1738087314/Vector_1_oimwdr.svg"
             alt="leftarrow"
+            width={16}
+            height={16}
           />
         </button>
         {Array.from({ length: totalPages }, (_, index) => (
@@ -237,9 +249,11 @@ const AnalyticsTable: React.FC<AnalyticsTableProps> = ({ handleEditLinkClick }) 
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
         >
-          <img
+          <Image
             src="https://res.cloudinary.com/dtu64orvo/image/upload/v1738087377/Vector_2_nysle4.svg"
             alt="rightarrow"
+            width={16}
+            height={16}
           />
         </button>
       </div>
